@@ -1,6 +1,10 @@
+require('dotenv').config();
 const path = require('path')
+const Dotenv = require('dotenv-webpack');
 
-module.exports = {
+const isProduction = process.env.NODE_ENV === 'production'
+
+const config  = {
     entry: './src/index.js',
     output: {
         filename: 'bundle.js',
@@ -20,8 +24,22 @@ module.exports = {
             }
         ]
     },
+    plugins: [
+        new Dotenv()
+    ],
     devServer: {
-        contentbase: './',
+        port: process.env.PORT,
+        static: './',
         open: true
     }
+}
+
+
+module.exports = () => {
+    if (isProduction) {
+        config.mode = 'production'
+    } else {
+        config.mode = 'development'
+    }
+    return config
 }
